@@ -1,7 +1,7 @@
 Websockets
 ==========
 
-Sockets are handled through a Socket Manager `SocketManager <binance.html#binance.websockets.SocketManager>`_.
+Sockets are handled through the Socket Manager `binance.websockets.SocketManager <binance.html#binance.websockets.SocketManager>`_.
 
 Multiple socket connections can be made through the manager.
 
