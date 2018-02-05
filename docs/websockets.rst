@@ -22,11 +22,11 @@ Create the manager like so, passing the API client.
 .. code:: python
 
     from binance.websockets import SocketManager
-    bm = SocketManager(client)
+    sm = SocketManager(client)
     # start any sockets here, i.e a trade socket
-    conn_key = bm.start_trade_socket('BNBBTC', process_message)
+    conn_key = sm.start_trade_socket('BNBBTC', process_message)
     # then start the socket manager
-    bm.start()
+    sm.start()
 
 A callback to process messages would take the format
 
@@ -75,7 +75,7 @@ See the `Binance Websocket Streams API documentation <https://github.com/binance
         print("stream: {} data: {}".format(msg['stream'], msg['data']))
 
     # pass a list of stream names
-    conn_key = bm.start_multiplex_socket(['bnbbtc@aggTrade', 'neobtc@ticker'], process_m_message)
+    conn_key = sm.start_multiplex_socket(['bnbbtc@aggTrade', 'neobtc@ticker'], process_m_message)
 
 `Depth Socket <binance.html#binance.websockets.SocketManager.start_depth_socket>`_
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -87,11 +87,11 @@ Valid depth values are 5, 10 and 20 and `defined as string constants <constants.
 .. code:: python
 
     # depth diff response
-    diff_key = bm.start_depth_socket('BNBBTC', process_message)
+    diff_key = sm.start_depth_socket('BNBBTC', process_message)
 
     # partial book response
     import binance.constants as bc
-    partial_key = bm.start_depth_socket('BNBBTC', process_message,
+    partial_key = sm.start_depth_socket('BNBBTC', process_message,
             depth=bc.WEBSOCKET_DEPTH_5)
 
 
@@ -104,7 +104,7 @@ Valid interval values are `defined as string constants <constants.html>`_.
 .. code:: python
 
     import binance.constants as bc
-    conn_key = bm.start_kline_socket('BNBBTC', process_message,
+    conn_key = sm.start_kline_socket('BNBBTC', process_message,
             interval=bc.KLINE_INTERVAL_30MINUTE)
 
 
@@ -113,7 +113,7 @@ Valid interval values are `defined as string constants <constants.html>`_.
 
 .. code:: python
 
-    conn_key = bm.start_aggtrade_socket('BNBBTC', process_message)
+    conn_key = sm.start_aggtrade_socket('BNBBTC', process_message)
 
 
 `Trade Socket <binance.html#binance.websockets.SocketManager.start_trade_socket>`_
@@ -121,21 +121,21 @@ Valid interval values are `defined as string constants <constants.html>`_.
 
 .. code:: python
 
-    conn_key = bm.start_trade_socket('BNBBTC', process_message)
+    conn_key = sm.start_trade_socket('BNBBTC', process_message)
 
 `Symbol Ticker Socket <binance.html#binance.websockets.SocketManager.start_symbol_ticker_socket>`_
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. code:: python
 
-    conn_key = bm.start_symbol_ticker_socket('BNBBTC', process_message)
+    conn_key = sm.start_symbol_ticker_socket('BNBBTC', process_message)
 
 `Ticker Socket <binance.html#binance.websockets.SocketManager.start_ticker_socket>`_
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. code:: python
 
-    conn_key = bm.start_ticker_socket(process_message)
+    conn_key = sm.start_ticker_socket(process_message)
 
 `User Socket <binance.html#binance.websockets.SocketManager.start_user_socket>`_
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -150,7 +150,7 @@ The Manager handles keeping the socket alive.
 
 .. code:: python
 
-    bm.start_user_socket(process_message)
+    sm.start_user_socket(process_message)
 
 
 `Close a Socket <binance.html#binance.websockets.SocketManager.stop_socket>`_
@@ -161,14 +161,14 @@ This takes a conn_key parameter which is returned when starting the socket.
 
 .. code:: python
 
-    bm.stop_socket(conn_key)
+    sm.stop_socket(conn_key)
 
 
 To stop all sockets and end the manager call `close` after doing this a `start` call would be required to connect any new sockets.
 
 .. code:: python
 
-    bm.close()
+    sm.close()
 
 .. image:: https://analytics-pixel.appspot.com/UA-111417213-1/github/python-binance/docs/websockets?pixel
 
