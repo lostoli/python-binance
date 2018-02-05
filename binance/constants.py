@@ -1,5 +1,3 @@
-# coding=utf-8
-
 SYMBOL_TYPE_SPOT = 'SPOT'
 
 ORDER_STATUS_NEW = 'NEW'

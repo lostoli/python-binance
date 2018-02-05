@@ -1,12 +1,10 @@
-# coding=utf-8
-
 from operator import itemgetter
 import time
 
 from .websockets import SocketManager
 
 
-class DepthCache(object):
+class DepthCache:
 
     def __init__(self, symbol):
         """Intialise the DepthCache
@@ -116,7 +114,7 @@ class DepthCache(object):
         return lst
 
 
-class DepthCacheManager(object):
+class DepthCacheManager:
 
     _default_refresh = 60 * 30  # 30 minutes
 

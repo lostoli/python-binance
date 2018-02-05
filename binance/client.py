@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import hashlib
 import hmac
 import requests
@@ -11,7 +9,7 @@ from .exceptions import APIException, RequestException, WithdrawException, \
 import binance.constants as bc
 
 
-class Client(object):
+class Client:
 
     API_URL = 'https://api.binance.com/api'
     WITHDRAW_API_URL = 'https://api.binance.com/wapi'
