@@ -474,15 +474,21 @@ class SocketManager(threading.Thread):
 
 
 # BEGIN the new websocket API.
-class SocketContextMan:
+class Websocket:
     def __init__(self, stream):
         self.wsctxman = websockets.connect(
                 'wss://stream.binance.com:9443/ws/'+stream)
     async def __aenter__(self):
         self.ws = await self.wsctxman.__aenter__()
         return self
-    async def __aexit__(self, *excinfo):
-        return await self.wsctxman.__aexit__(*excinfo)
+    def __aexit__(self, *excinfo):
+        return self.wsctxman.__aexit__(*excinfo)
+    def connect(self):
+        """For using Websocket outside of an `async with` statement."""
+        self.__aenter__()
+    def disconnect(self):
+        """For using Websocket outside of an `async with` statement."""
+        self.__aexit__(None, None, None)
     async def recv(self):
         """Receive a JSON message and handle common Binance-related errors, like
         the automatic 24-hour disconnect."""
@@ -493,4 +499,4 @@ class SocketContextMan:
                 await asyncio.sleep(1)
 
 def aggTrade(pair):
-    return SocketContextMan(pair.lower()+'@aggTrade')
+    return Websocket(pair.lower()+'@aggTrade')
