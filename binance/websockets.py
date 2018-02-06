@@ -8,6 +8,8 @@ from twisted.internet.protocol \
     import ReconnectingClientFactory as TReconnectingClientFactory
 from twisted.internet.error import ReactorAlreadyRunning
 
+import websockets
+
 import binance.constants as bc
 
 
@@ -468,3 +470,18 @@ class SocketManager(threading.Thread):
             self.stop_socket(key)
 
         self._conns = {}
+
+
+# BEGIN the new websocket API
+async def recv(ws):
+    """Receive a JSON message and handle common Binance-related errors, like
+    the automatic 24-hour disconnect."""
+    while True:
+        try:
+            return json.loads(await ws.recv())
+        except
+
+def connect(stream):
+    return websockets.connect('wss://stream.binance.com:9443/ws/'+stream)
+def aggTrade(pair):
+    return connect(pair.lower()+'@aggTrade')
