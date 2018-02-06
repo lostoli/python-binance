@@ -9,6 +9,7 @@ from twisted.internet.protocol \
 from twisted.internet.error import ReactorAlreadyRunning
 
 import websockets
+import asyncio
 
 import binance.constants as bc
 
@@ -472,16 +473,24 @@ class SocketManager(threading.Thread):
         self._conns = {}
 
 
-# BEGIN the new websocket API
-async def recv(ws):
-    """Receive a JSON message and handle common Binance-related errors, like
-    the automatic 24-hour disconnect."""
-    while True:
-        try:
-            return json.loads(await ws.recv())
-        except
+# BEGIN the new websocket API.
+class SocketContextMan:
+    def __init__(self, stream):
+        self.wsctxman = websockets.connect(
+                'wss://stream.binance.com:9443/ws/'+stream)
+    async def __aenter__(self):
+        self.ws = await self.wsctxman.__aenter__()
+        return self
+    async def __aexit__(self, *excinfo):
+        return await self.wsctxman.__aexit__(*excinfo)
+    async def recv(self):
+        """Receive a JSON message and handle common Binance-related errors, like
+        the automatic 24-hour disconnect."""
+        while True:
+            try:
+                return json.loads(await self.ws.recv())
+            except websockets.ConnectionClosed:
+                await asyncio.sleep(1)
 
-def connect(stream):
-    return websockets.connect('wss://stream.binance.com:9443/ws/'+stream)
 def aggTrade(pair):
-    return connect(pair.lower()+'@aggTrade')
+    return SocketContextMan(pair.lower()+'@aggTrade')
