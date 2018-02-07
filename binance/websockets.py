@@ -475,6 +475,12 @@ class SocketManager(threading.Thread):
 
 # BEGIN the new websocket API.
 class Websocket:
+    """A websocket for binance streams. Handles Binance-related errors and
+    json decoding. Designed to be used with `async with` as an asynchronous
+    context manager. When used in this manner, it returns itself. Never
+    instantiated directly by the application. Get a Websocket from the
+    connecting function corresponding to the stream you want to connect to,
+    like `aggregate_trades()` for the `aggTrade` stream, for example."""
     def __init__(self, stream):
         self.wsctxman = websockets.connect(
                 'wss://stream.binance.com:9443/ws/'+stream)
@@ -496,7 +502,35 @@ class Websocket:
             try:
                 return json.loads(await self.ws.recv())
             except websockets.ConnectionClosed:
-                await asyncio.sleep(1)
+                await asyncio.sleep(.1)
 
-def aggTrade(pair):
-    return Websocket(pair.lower()+'@aggTrade')
+def aggregate_trades(symbol):
+    """return a websocket for symbol trade data
+
+    https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#aggregate-trade-streams
+
+    :param symbol: required
+    :type symbol: str
+
+    :returns: A Websocket object.
+
+    Message Format
+
+    .. code-block:: python
+
+        {
+            "e": "aggTrade",		# event type
+            "E": 1499405254326,		# event time
+            "s": "ETHBTC",			# symbol
+            "a": 70232,				# aggregated tradeid
+            "p": "0.10281118",		# price
+            "q": "8.15632997",		# quantity
+            "f": 77489,				# first breakdown trade id
+            "l": 77489,				# last breakdown trade id
+            "T": 1499405254324,		# trade time
+            "m": false,				# whether buyer is a maker
+            "M": true				# can be ignored
+        }
+
+    """
+    return Websocket(symbol.lower()+'@aggTrade')

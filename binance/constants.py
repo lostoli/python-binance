@@ -43,11 +43,12 @@ ORDER_RESP_TYPE_ACK = 'ACK'
 ORDER_RESP_TYPE_RESULT = 'RESULT'
 ORDER_RESP_TYPE_FULL = 'FULL'
 
-WEBSOCKET_DEPTH_5 = '5'
-WEBSOCKET_DEPTH_10 = '10'
-WEBSOCKET_DEPTH_20 = '20'
+WS_DEPTH_5 = '5'
+WS_DEPTH_10 = '10'
+WS_DEPTH_20 = '20'
 
-# For munching upon the data returned by Client.aggregate_trades().
+# For munching upon the data returned by Client.aggregate_trades() and
+# websockets.aggregate_trades().
 AGG_ID             = 'a'  # noqa: E221
 AGG_PRICE          = 'p'  # noqa: E221
 AGG_QUANTITY       = 'q'  # noqa: E221
@@ -56,3 +57,8 @@ AGG_LAST_TRADE_ID  = 'l'  # noqa: E221
 AGG_TIME           = 'T'  # noqa: E221
 AGG_BUYER_MAKES    = 'm'  # noqa: E221
 AGG_BEST_MATCH     = 'M'  # noqa: E221
+
+# Common keys in many websocket events.
+WS_EVENT_TYPE = 'e'
+WS_EVENT_TIME = 'E'
+WS_SYMBOL = 's'
