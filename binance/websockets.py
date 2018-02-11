@@ -482,19 +482,22 @@ class Websocket:
     connecting function corresponding to the stream you want to connect to,
     like `aggregate_trades()` for the `aggTrade` stream, for example."""
     def __init__(self, stream):
-        self.wsctxman = websockets.connect(
-                'wss://stream.binance.com:9443/ws/'+stream)
+        self._stream = stream
+        
     async def __aenter__(self):
-        self.ws = await self.wsctxman.__aenter__()
+        await self.connect()
         return self
     def __aexit__(self, *excinfo):
-        return self.wsctxman.__aexit__(*excinfo)
-    def connect(self):
+        return self.disconnect()
+
+    async def connect(self):
         """For using Websocket outside of an `async with` statement."""
-        self.__aenter__()
+        self.ws = await websockets.connect(
+                'wss://stream.binance.com:9443/ws/'+self._stream)
     def disconnect(self):
         """For using Websocket outside of an `async with` statement."""
-        self.__aexit__(None, None, None)
+        return self.ws.close()
+
     async def recv(self):
         """Receive a JSON message and handle common Binance-related errors, like
         the automatic 24-hour disconnect."""
@@ -502,7 +505,9 @@ class Websocket:
             try:
                 return json.loads(await self.ws.recv())
             except websockets.ConnectionClosed:
+                self.disconnect()
                 await asyncio.sleep(.1)
+                self.connect()
 
 def aggregate_trades(symbol):
     """return a websocket for symbol trade data
@@ -513,24 +518,5 @@ def aggregate_trades(symbol):
     :type symbol: str
 
     :returns: A Websocket object.
-
-    Message Format
-
-    .. code-block:: python
-
-        {
-            "e": "aggTrade",		# event type
-            "E": 1499405254326,		# event time
-            "s": "ETHBTC",			# symbol
-            "a": 70232,				# aggregated tradeid
-            "p": "0.10281118",		# price
-            "q": "8.15632997",		# quantity
-            "f": 77489,				# first breakdown trade id
-            "l": 77489,				# last breakdown trade id
-            "T": 1499405254324,		# trade time
-            "m": false,				# whether buyer is a maker
-            "M": true				# can be ignored
-        }
-
     """
     return Websocket(symbol.lower()+'@aggTrade')
