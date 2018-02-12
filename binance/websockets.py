@@ -505,9 +505,9 @@ class Websocket:
             try:
                 return json.loads(await self.ws.recv())
             except websockets.ConnectionClosed:
-                self.disconnect()
+                await self.disconnect()
                 await asyncio.sleep(.1)
-                self.connect()
+                await self.connect()
 
 def aggregate_trades(symbol):
     """return a websocket for symbol trade data
