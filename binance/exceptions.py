@@ -1,16 +1,15 @@
 
 class APIException(Exception):
-
-    LISTENKEY_NOT_EXIST = '-1125'
-
     def __init__(self, response):
         self.status_code = 0
+        code = None
         try:
             json_res = response.json()
+            code = int(json_res['code'])
         except ValueError:
             self.message = 'Invalid JSON error message from Binance: {}'.format(response.text)
         else:
-            self.code = json_res['code']
+            self.code = code
             self.message = json_res['msg']
         self.status_code = response.status_code
         self.response = response
