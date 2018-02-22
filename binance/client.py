@@ -4,7 +4,7 @@ import requests
 import time
 from operator import itemgetter
 from .helpers import interval_to_milliseconds
-from .exceptions import APIException, RequestException, WithdrawException, \
+from .exceptions import APIException, ResponseException, WithdrawException, \
     NoAPIKeyException, NoAPISecretException
 import binance.constants as bc
 
@@ -152,7 +152,7 @@ class Client:
         try:
             return response.json()
         except ValueError:
-            raise RequestException('Invalid Response: %s' % response.text)
+            raise ResponseException('Invalid Response: %s' % response.text)
 
     def _get(self, path, signed=False, version=PUBLIC_API_VERSION, **kwargs):
         return self._request_api('get', path, signed, version, **kwargs)

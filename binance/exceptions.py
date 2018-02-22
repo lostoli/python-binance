@@ -19,12 +19,12 @@ class APIException(Exception):
         return 'APIError(code=%s): %s' % (self.code, self.message)
 
 
-class RequestException(Exception):
+class ResponseException(Exception):
     def __init__(self, message):
         self.message = message
 
     def __str__(self):
-        return 'RequestException: %s' % self.message
+        return 'ResponseException: %s' % self.message
 
 
 class OrderException(Exception):

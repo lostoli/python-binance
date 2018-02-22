@@ -2,7 +2,7 @@
 # coding=utf-8
 
 from binance import Client
-from binance.exceptions import APIException, RequestException, WithdrawException
+from binance.exceptions import APIException, ResponseException, WithdrawException
 import pytest
 import requests_mock
 
@@ -13,7 +13,7 @@ client = Client('api_key', 'api_secret')
 def test_invalid_json():
     """Test Invalid response Exception"""
 
-    with pytest.raises(RequestException):
+    with pytest.raises(ResponseException):
         with requests_mock.mock() as m:
             m.get('https://www.binance.com/exchange/public/product', text='<head></html>')
             client.products()
