@@ -152,7 +152,8 @@ class Client:
         try:
             return response.json()
         except ValueError:
-            raise ResponseException('Invalid Response: %s' % response.text)
+            raise ResponseException(
+                    'Invalid Response: {}'.format(response.text))
 
     def _get(self, path, signed=False, version=PUBLIC_API_VERSION, **kwargs):
         return self._request_api('get', path, signed, version, **kwargs)

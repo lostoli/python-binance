@@ -16,7 +16,7 @@ class APIException(Exception):
         self.request = getattr(response, 'request', None)
 
     def __str__(self):  # pragma: no cover
-        return 'APIError(code=%s): %s' % (self.code, self.message)
+        return 'APIError(code={}): {}'.format(self.code, self.message)
 
 
 class ResponseException(Exception):
@@ -24,7 +24,7 @@ class ResponseException(Exception):
         self.message = message
 
     def __str__(self):
-        return 'ResponseException: %s' % self.message
+        return 'ResponseException: {}'.format(self.message)
 
 
 class OrderException(Exception):
@@ -34,41 +34,41 @@ class OrderException(Exception):
         self.message = message
 
     def __str__(self):
-        return 'OrderException(code=%s): %s' % (self.code, self.message)
+        return 'OrderException(code={}): {}'.format(self.code, self.message)
 
 
 class OrderMinAmountException(OrderException):
 
     def __init__(self, value):
-        message = "Amount must be a multiple of %s" % value
+        message = 'Amount must be a multiple of {}'.format(value)
         super(OrderMinAmountException, self).__init__(-1013, message)
 
 
 class OrderMinPriceException(OrderException):
 
     def __init__(self, value):
-        message = "Price must be at least %s" % value
+        message = 'Price must be at least {}'.format(value)
         super(OrderMinPriceException, self).__init__(-1013, message)
 
 
 class OrderMinTotalException(OrderException):
 
     def __init__(self, value):
-        message = "Total must be at least %s" % value
+        message = 'Total must be at least {}'.format(value)
         super(OrderMinTotalException, self).__init__(-1013, message)
 
 
 class OrderUnknownSymbolException(OrderException):
 
     def __init__(self, value):
-        message = "Unknown symbol %s" % value
+        message = 'Unknown symbol {}'.format(value)
         super(OrderUnknownSymbolException, self).__init__(-1013, message)
 
 
 class OrderInactiveSymbolException(OrderException):
 
     def __init__(self, value):
-        message = "Attempting to trade an inactive symbol %s" % value
+        message = 'Attempting to trade an inactive symbol {}'.format(value)
         super(OrderInactiveSymbolException, self).__init__(-1013, message)
 
 
@@ -79,7 +79,7 @@ class WithdrawException(Exception):
         self.message = message
 
     def __str__(self):
-        return 'WithdrawException: %s' % self.message
+        return 'WithdrawException: {}'.format(self.message)
 
 
 class NoAPIKeyException(Exception):
