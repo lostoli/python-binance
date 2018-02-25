@@ -1383,8 +1383,45 @@ class Client:
         """
         return self._get('account', True, data=params)
 
+    def asset_balances(self, **params):
+        """Get a dictionary of all asset balances with the asset names as the
+        keys. This is a convenient reformatting of the actual asset balances
+        returned from Binance. Data source used:
+
+        https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#account-information-user_data
+
+        :param recvWindow: the number of milliseconds the request is valid for
+        :type recvWindow: int
+
+        :returns: dictionary
+
+        .. code-block:: python
+
+            {
+                'BTC': {
+                        'free': '4723846.89208129',
+                        'locked': '0.00000000'
+                    }
+                'ETH': {
+                        'free': '4723846.89208129',
+                        'locked': '0.00000000'
+                    }
+                ...
+            }
+
+        :raises: ResponseException, APIException
+
+        """
+        res = self.account(**params)
+        bals = {}
+        for bal in res['balances']:
+            name = bal.pop('asset')
+            bals[name] = bal
+        return bals
+
+
     def asset_balance(self, asset, **params):
-        """Get current asset balance.
+        """Get the balance of the asset "asset".
 
         https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md#account-information-user_data
 
@@ -1393,7 +1430,7 @@ class Client:
         :param recvWindow: the number of milliseconds the request is valid for
         :type recvWindow: int
 
-        :returns: dictionary or None if not found
+        :returns: dictionary
 
         .. code-block:: python
 
@@ -1403,16 +1440,11 @@ class Client:
                 "locked": "0.00000000"
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, KeyError
 
         """
-        res = self.account(**params)
-        # find asset balance in list of balances
-        if "balances" in res:
-            for bal in res['balances']:
-                if bal['asset'].lower() == asset.lower():
-                    return bal
-        return None
+        res = self.asset_balances(**params)
+        return res[asset]
 
     def my_trades(self, **params):
         """Get trades for a specific symbol.
