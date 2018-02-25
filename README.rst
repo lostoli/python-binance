@@ -41,7 +41,7 @@ as complete as the parent project. Among these improvements:
   JSON dictionary key names, error codes, etc.) are added and those constants
   that were already present are more sensibly organised.
 - Migration toward a coroutine-based websocket framework called websockets and
-  away from the car fire that is twisted has begun.
+  away from the car fire that is Twisted has begun.
 - New convenience methods have been added to binance.Client.
 
 For all changes, just look at the git history.
