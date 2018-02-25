@@ -30,6 +30,8 @@ websockets is not complete, though the parts that /are/ done are ready to use.
 Everything outside of websockets is complete though, which is to say at least
 as complete as the parent project. Among these improvements:
 
+- A Binance account and API key are no longer needed for all API calls that do
+  not require them.
 - Compatibility with all deprecated versions of python has been removed, thus
   dramatically simplifying maintenance and increasing robustness.
 - Unnecessary dependencies like dateparser are removed.
