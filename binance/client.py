@@ -566,11 +566,11 @@ class Client:
                 trades = self.aggregate_trades(symbol=pair, fromId=0)
             else:
                 # It doesn't matter what the end time is, as long as it's less
-                # than a day and the result set contains at least one trade.
-                # A half a day should be fine.
+                # than an hour and the result set contains at least one trade.
+                # A half an hour should be fine.
                 trades = self.aggregate_trades(
                     symbol=pair, startTime=start_time,
-                    endTime=start_time + 1000 * 86400 // 2)
+                    endTime=start_time + 1000 * 3600 // 2)
             for t in trades:
                 yield t
             last_id = trades[-1][bc.AGG_ID]
