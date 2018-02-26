@@ -114,3 +114,21 @@ E_REJECTED_MBX_KEY = -2015
 
 # Messages for -1010 ERROR_MSG_RECEIVED, -2010 NEW_ORDER_REJECTED, and -2011 CANCEL_REJECTED
 EMSG_UNKNOWN_ORDER = 'UNKNOWN_ORDER'
+EMSG_DUPLICATE = 'Duplicate order sent.'
+EMSG_CLOSED = 'Market is closed.'
+EMSG_BALANCE = 'Account has insufficient balance for requested action.'
+EMSG_NO_MARKET = 'Market orders are not supported for this symbol.'
+EMSG_NO_ICEBERG = 'Iceberg orders are not supported for this symbol.'
+EMSG_NO_STOP_LOSS = 'Stop loss orders are not supported for this symbol.'
+EMSG_NO_STOP_LOSS_LIMIT = \
+        'Stop loss limit orders are not supported for this symbol.'
+EMSG_NO_TAKE_PROFIT = 'Take profit orders are not supported for this symbol.'
+EMSG_NO_TAKE_PROFIT_LIMIT = \
+        'Take profit limit orders are not supported for this symbol.'
+EMSG_PRICE_QTY = 'Price * QTY is zero or less.'
+EMSG_ICEBERGQTY = 'IcebergQty exceeds QTY.'
+EMSG_ACTION_DISABLED = 'This action disabled is on this account.'
+EMSG_ORDER_COMBO = 'Unsupported order combination'
+EMSG_WOULD_TRIGGER = 'Order would trigger immediately.'
+EMSG_CANCEL_INVALID = 'Cancel order is invalid. Check origClOrdId and orderId.'
+EMSG_WOULD_TAKE = 'Order would immediately match and take.'
