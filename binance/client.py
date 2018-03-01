@@ -295,6 +295,15 @@ class Client:
                 return item
 
         return None
+    def symbol_filters(self, symbol):
+        """Return a symbol's filters as a dictionary with the filterType as
+        the key."""
+        res = self.symbol_info(symbol)['filters']
+        fs = {}
+        for f in res:
+            t = f.pop('filterType')
+            fs[t] = f
+        return fs
 
     # General Endpoints
 
