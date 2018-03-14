@@ -481,7 +481,7 @@ class Websocket:
     instantiated directly by the application. Get a Websocket from the
     connecting function corresponding to the stream you want to connect to,
     like `aggregate_trades()` for the `aggTrade` stream, for example."""
-    def new(stream):
+    async def new(stream):
         self = WebSocket()
         self._stream = stream
         await self.connect()
