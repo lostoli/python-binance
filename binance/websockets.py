@@ -521,4 +521,4 @@ def aggregate_trades(symbol):
 
     :returns: A Websocket object.
     """
-    return Websocket.new(symbol.lower()+'@aggTrade')
+    return await Websocket.new(symbol.lower()+'@aggTrade')
