@@ -485,6 +485,7 @@ class Websocket:
         self = Websocket()
         self._stream = stream
         await self.connect()
+        return self
         
     async def __aenter__(self):
         return self
