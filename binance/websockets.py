@@ -511,7 +511,7 @@ class Websocket:
                 await asyncio.sleep(.1)
                 await self.connect()
 
-def aggregate_trades(symbol):
+async def aggregate_trades(symbol):
     """return a websocket for symbol trade data
 
     https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#aggregate-trade-streams
