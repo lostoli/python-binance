@@ -483,9 +483,9 @@ class Websocket:
     like `aggregate_trades()` for the `aggTrade` stream, for example."""
     def __init__(self, stream):
         self._stream = stream
+        self.connect()
         
     async def __aenter__(self):
-        await self.connect()
         return self
     def __aexit__(self, *excinfo):
         return self.disconnect()
@@ -495,7 +495,8 @@ class Websocket:
         self.ws = await websockets.connect(
                 'wss://stream.binance.com:9443/ws/'+self._stream)
     def disconnect(self):
-        """For using Websocket outside of an `async with` statement."""
+        """For using Websocket outside of an `async with` statement. A
+        coroutine."""
         return self.ws.close()
 
     async def recv(self):
