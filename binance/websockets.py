@@ -482,7 +482,7 @@ class Websocket:
     connecting function corresponding to the stream you want to connect to,
     like `aggregate_trades()` for the `aggTrade` stream, for example."""
     async def new(stream):
-        self = WebSocket()
+        self = Websocket()
         self._stream = stream
         await self.connect()
         
