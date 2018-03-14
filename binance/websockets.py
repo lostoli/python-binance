@@ -483,7 +483,7 @@ class Websocket:
     like `aggregate_trades()` for the `aggTrade` stream, for example."""
     def __init__(self, stream):
         self._stream = stream
-        self.connect()
+        await self.connect()
         
     async def __aenter__(self):
         return self
