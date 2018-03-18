@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+
+from time import time
+import asyncio as aio
+loop = aio.get_event_loop()
+import binance.websockets
+
+async def cr():
+    async with await binance.websockets.aggregate_trades('NANOBTC') as ws:
+        while True:
+            print(await ws.recv())
+loop.run_until_complete(cr())
