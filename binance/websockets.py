@@ -486,20 +486,22 @@ class Websocket:
         self._stream = stream
         await self.connect()
         return self
+    async def single(name):
+        return await Websocket.new('ws/'+name)
         
     async def __aenter__(self):
         return self
-    def __aexit__(self, *excinfo):
-        return self.disconnect()
+    async def __aexit__(self, *excinfo):
+        return await self.disconnect()
 
     async def connect(self):
         """For using Websocket outside of an `async with` statement."""
         self.ws = await websockets.connect(
-                'wss://stream.binance.com:9443/ws/'+self._stream)
-    def disconnect(self):
+                'wss://stream.binance.com:9443/'+self._stream)
+    async def disconnect(self):
         """For using Websocket outside of an `async with` statement. A
         coroutine."""
-        return self.ws.close()
+        return await self.ws.close()
 
     async def recv(self):
         """Receive a JSON message and handle common Binance-related errors, like
@@ -512,6 +514,12 @@ class Websocket:
                 await asyncio.sleep(.1)
                 await self.connect()
 
+
+async def combined(names):
+    return await Websocket.new('stream?streams=' + '/'.join(names))
+
+def aggregate_trades_name(symbol):
+    return symbol.lower()+'@aggTrade'
 async def aggregate_trades(symbol):
     """return a websocket for symbol trade data
 
@@ -522,4 +530,4 @@ async def aggregate_trades(symbol):
 
     :returns: A Websocket object.
     """
-    return await Websocket.new(symbol.lower()+'@aggTrade')
+    return await Websocket.single(aggregate_trades_name(symbol))
