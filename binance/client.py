@@ -576,10 +576,17 @@ class Client:
             else:
                 # It doesn't matter what the end time is, as long as it's less
                 # than an hour and the result set contains at least one trade.
-                # A half an hour should be fine.
-                trades = self.aggregate_trades(
-                    symbol=pair, startTime=start_time,
-                    endTime=start_time + 1000 * 3600 // 2)
+                # A half an hour should be fine most of the time, but just in
+                # case there isn't a trade, we'll keep looking.
+                dt = 1000*3600//2
+                while True:
+                    if start_time > time():
+                        return
+                    trades = self.aggregate_trades(symbol=pair,
+                            startTime=start_time, endTime=start_time + dt)
+                    if len(trades) > 0:
+                        break
+                    start_time += dt - 1000
             for t in trades:
                 yield t
             last_id = trades[-1][bc.AGG_ID]
