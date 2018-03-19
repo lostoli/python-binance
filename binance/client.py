@@ -3,6 +3,9 @@ import hmac
 import requests
 import time
 from operator import itemgetter
+import random
+import string
+
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
     NoAPIKeyException, NoAPISecretException
@@ -871,8 +874,21 @@ class Client:
 
     # Account Endpoints
 
-    def create_order(self, **params):
-        """Send in a new order
+    def create_order_raw(self, **params):
+        """Send in a new order, the raw API call. If it fails due to network
+        error, the order may have still gone through. If you don't want to
+        handle this, use Client.create_order(). The only reason to use this is
+        if you require transactTime in the result."""
+            return self._post('order', True, data=params)
+    def create_order(self, prefix='py_', **params):
+        """Send in a new order.
+
+        Occasionally the REST call fails due to network error, but the order
+        has actually gone through. When this happens, the result of the
+        original REST call is lost and the result of Client.query_order() is
+        returned instead. It has all of the same information, except for
+        transactTime. So don't rely on the presence of transactTime in the
+        result!! If you need it, use Client.create_order_rest().
 
         Any order with an icebergQty MUST have timeInForce set to GTC.
 
@@ -983,7 +999,29 @@ class Client:
         :raises: ResponseException, APIException, OrderException, OrderMinAmountException, OrderMinPriceException, OrderMinTotalException, OrderUnknownSymbolException, OrderInactiveSymbolException, NoAPISecretException
 
         """
-        return self._post('order', True, data=params)
+        if 'newClientOrderId' not in params:
+            s = ''
+            for i in range(36 - len(prefix)):
+                s += random.choice(string.ascii_letters + string.digits)
+            params['newClientOrderId'] = prefix + s
+        try:
+            return self.create_order_raw(**params)
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.ReadTimeout):
+            # The order may have gone through in spite of these errors! Try to
+            # find it.
+            for i in range(3):
+                try:
+                    return self.query_order(symbol=params['symbol'],
+                            origClientOrderId=params['newClientOrderId'])
+                except APIException as e:
+                    if e.code != E_NO_SUCH_ORDER:
+                        raise
+                except (requests.exceptions.ConnectionError,
+                        requests.exceptions.ReadTimeout):
+                    pass
+                time.sleep(1)
+            raise
 
     def create_limit_order(self, timeInForce=bc.TIME_IN_FORCE_GTC, **params):
         """Send in a new limit order
