@@ -8,7 +8,8 @@ class APIException(Exception):
             json_res = response.json()
             code = int(json_res['code'])
         except ValueError:
-            self.message = 'Invalid JSON error message from Binance: {}'.format(response.text)
+            self.message = 'Invalid JSON error message from Binance: ' \
+                    '{}'.format(response.text)
         else:
             self.code = code
             self.message = json_res['msg']
@@ -95,5 +96,5 @@ class NoAPISecretException(Exception):
 
 class ConnectionError(Exception):
     def __str__(self):
-        return 'ConnectionError: Communication with Binance was interrupted due
-        to a network error.'
+        return 'ConnectionError: Communication with Binance was interrupted ' \
+                'due to a network error.'

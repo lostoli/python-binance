@@ -5,6 +5,7 @@ import time
 from operator import itemgetter
 import random
 import string
+from copy import deepcopy
 
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
@@ -91,55 +92,61 @@ class Client:
                 has_signature = True
             else:
                 params.append((key, value))
-        # sort parameters by key
+        # Sort parameters by key.
         params.sort(key=itemgetter(0))
         if has_signature:
             params.append(('signature', data['signature']))
         return params
 
-    def _request(self, method, uri, signed, force_params=False, **kwargs):
+    def _request(self, method, uri, signed, force_params=False, retry=False,
+            **kwargs):
+        # Retry is meant to be used by the application to enable or disable
+        # retrying. The default should really only be used by read-only stuff
+        # like queries, and not for stuff like order placement. Retrying for
+        # remote state-modifying calls should be handled on a per-call basis.
 
-        # set default requests timeout
+        # Set default requests timeout.
         kwargs['timeout'] = 10
 
-        # add our global requests params
+        # Add our global requests params.
         if self._requests_params:
             kwargs.update(self._requests_params)
 
-        data = kwargs.get('data', None)
-        if data and isinstance(data, dict):
-            kwargs['data'] = data
-        if signed:
-            # generate signature
-            kwargs['data']['timestamp'] = int(time.time() * 1000)
-            kwargs['data']['signature'] = \
-                    self._generate_signature(kwargs['data'])
-
-        # sort get and post params to match signature order
-        if data:
-            # find any requests params passed and apply them
-            if 'requests_params' in kwargs['data']:
-                # merge requests params into kwargs
-                kwargs.update(kwargs['data']['requests_params'])
-                del(kwargs['data']['requests_params'])
-
-            # sort post params
-            kwargs['data'] = self._order_params(kwargs['data'])
-
-        # if get request assign data array to params value for requests lib
-        if data and (method == 'get' or force_params):
-            kwargs['params'] = kwargs['data']
-            del(kwargs['data'])
-
+        # kwargs gets changed every attempt, so remember the original kwargs.
+        kwargs0 = kwargs
         try:
+            kwargs = deepcopy(kwargs0)
+
+            if signed:
+                # Generate signature.
+                kwargs['data']['timestamp'] = int(time.time() * 1000)
+                kwargs['data']['signature'] = \
+                        self._generate_signature(kwargs['data'])
+            if 'data' in kwargs0:
+                # Find any requests params passed and apply them.
+                if 'requests_params' in kwargs['data']:
+                    # Merge requests params into kwargs.
+                    kwargs.update(kwargs['data']['requests_params'])
+                    del(kwargs['data']['requests_params'])
+
+                # Sort get or post params to match signature order.
+                kwargs['data'] = self._order_params(kwargs['data'])
+
+                # If this is a get request, assign data array to params value
+                # for requests lib.
+                if method == 'get' or force_params:
+                    kwargs['params'] = kwargs['data']
+                    del(kwargs['data'])
             response = getattr(self.session, method)(uri, **kwargs)
             return self._handle_response(response)
         except (requests.exceptions.ConnectionError,
                 requests.exceptions.ReadTimeout):
-            # Error handling for these two cases is always the same, so merge
-            # the two cases into a single Binance connection error. If I'm
-            # wrong, this can be changed back again.
-            raise bex.ConnectionError
+            if not retry:
+                # Error handling for these two cases is always the same, so
+                # merge the two cases into a single Binance connection error.
+                # If I'm wrong, this can be changed back again.
+                raise bex.ConnectionError
+            time.sleep(1)
 
     def _request_api(self, method, path, signed=False,
             version=PUBLIC_API_VERSION, **kwargs):
@@ -1439,7 +1446,7 @@ class Client:
         ConnectionError
 
         """
-        res = self._delete('order', True, data=params)
+        return self._delete('order', True, data=params)
 
     def open_orders(self, **params):
         """Get all open orders on a symbol.
