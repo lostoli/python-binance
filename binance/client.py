@@ -269,7 +269,7 @@ class Client:
 
         """
 
-        return self._get('exchangeInfo')
+        return self._get('exchangeInfo', retry=True)
 
     def symbol_info(self, symbol):
         """Return information about a symbol
@@ -312,7 +312,7 @@ class Client:
 
         """
 
-        res = self._get('exchangeInfo')
+        res = self.exchange_info()
 
         for item in res['symbols']:
             if item['symbol'] == symbol.upper():
@@ -570,7 +570,7 @@ class Client:
         :raises: ResponseException, APIException, ConnectionError
 
         """
-        return self._get('aggTrades', data=params)
+        return self._get('aggTrades', data=params, retry=True)
 
     def aggregate_trade_iter(self, pair, start_time=None, last_id=None):
         """Iterate over aggregate trade data from (start_time or last_id) to
@@ -1378,7 +1378,7 @@ class Client:
         ConnectionError
 
         """
-        return self._get('order', True, data=params)
+        return self._get('order', True, data=params, retry=True)
 
     def all_orders(self, **params):
         """Get all account orders; active, canceled, or filled.
@@ -1423,9 +1423,13 @@ class Client:
         """
         return self._get('allOrders', True, data=params)
 
-    def cancel_order(self, **params):
+    def cancel_order_raw(self, retry=False, **params):
+        return self._delete('order', True, data=params, retry=retry)
+    def cancel_order(self, retry=True, **params):
         """Cancel an active order. Either orderId or origClientOrderId must be
-        sent.
+        sent. Retries by default and succeeds if the order was already
+        cancelled. If you don't want either of these, use cancel_order_raw() to
+        access the REST endpoint directly.
 
         https://github.com/binance-exchange/binance-official-api-docs
         /blob/master/rest-api.md#cancel-order-trade
@@ -1446,7 +1450,12 @@ class Client:
         ConnectionError
 
         """
-        return self._delete('order', True, data=params)
+        try:
+            self.cancel_order_raw(retry=retry, **params)
+        except APIException as e:
+            if e.code != bc.E_CANCEL_REJECTED or \
+                    e.message != bc.EMSG_UNKNOWN_ORDER:
+                raise
 
     def open_orders(self, **params):
         """Get all open orders on a symbol.
@@ -1527,7 +1536,7 @@ class Client:
         ConnectionError
 
         """
-        return self._get('account', True, data=params)
+        return self._get('account', True, data=params, retry=True)
 
     def asset_balances(self, **params):
         """Get a dictionary of all asset balances with the asset names as the
