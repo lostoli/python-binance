@@ -91,3 +91,9 @@ class NoAPIKeyException(Exception):
 class NoAPISecretException(Exception):
     def __str__(self):
         return 'NoAPISecretException: This endpoint requires an API secret.'
+
+
+class ConnectionError(Exception):
+    def __str__(self):
+        return 'ConnectionError: Communication with Binance was interrupted due
+        to a network error.'

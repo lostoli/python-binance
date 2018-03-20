@@ -9,6 +9,7 @@ import string
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
     NoAPIKeyException, NoAPISecretException
+import binance.exceptions as bex
 import binance.constants as bc
 
 
@@ -130,8 +131,15 @@ class Client:
             kwargs['params'] = kwargs['data']
             del(kwargs['data'])
 
-        response = getattr(self.session, method)(uri, **kwargs)
-        return self._handle_response(response)
+        try:
+            response = getattr(self.session, method)(uri, **kwargs)
+            return self._handle_response(response)
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.ReadTimeout):
+            # Error handling for these two cases is always the same, so merge
+            # the two cases into a single Binance connection error. If I'm
+            # wrong, this can be changed back again.
+            raise bex.ConnectionError
 
     def _request_api(self, method, path, signed=False,
             version=PUBLIC_API_VERSION, **kwargs):
@@ -1044,8 +1052,7 @@ class Client:
             params['newClientOrderId'] = prefix + s
         try:
             return self.create_order_raw(**params)
-        except (requests.exceptions.ConnectionError,
-                requests.exceptions.ReadTimeout):
+        except bex.ConnectionError:
             # The order may have gone through in spite of these errors! Try to
             # find it.
             for i in range(3):
@@ -1055,8 +1062,7 @@ class Client:
                 except APIException as e:
                     if e.code != bc.E_NO_SUCH_ORDER:
                         raise
-                except (requests.exceptions.ConnectionError,
-                        requests.exceptions.ReadTimeout):
+                except bex.ConnectionError:
                     pass
                 time.sleep(1)
             raise
