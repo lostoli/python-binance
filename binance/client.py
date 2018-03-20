@@ -193,7 +193,7 @@ class Client:
 
         :returns: list - List of product dictionaries
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
 
@@ -258,7 +258,7 @@ class Client:
                 ]
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
 
@@ -301,7 +301,7 @@ class Client:
                 ]
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
 
@@ -336,7 +336,7 @@ class Client:
 
             {}
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ping')
@@ -355,7 +355,7 @@ class Client:
                 "serverTime": 1499827319559
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('time')
@@ -382,7 +382,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ticker/allPrices')
@@ -413,7 +413,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ticker/allBookTickers')
@@ -451,7 +451,7 @@ class Client:
                 ]
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('depth', data=params)
@@ -482,7 +482,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('trades', data=params)
@@ -515,7 +515,8 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException, NoAPIKeyException
+        :raises: ResponseException, APIException, NoAPIKeyException,
+        ConnectionError
 
         """
         self._assert_api_key()
@@ -559,7 +560,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('aggTrades', data=params)
@@ -675,7 +676,7 @@ class Client:
                 ]
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('klines', data=params)
@@ -819,7 +820,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ticker/24hr', data=params)
@@ -857,7 +858,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ticker/price', data=params,
@@ -905,7 +906,7 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._get('ticker/bookTicker', data=params,
@@ -1042,7 +1043,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException, NoAPISecretException
+        OrderInactiveSymbolException, NoAPISecretException, ConnectionError
 
         """
         if 'newClientOrderId' not in params:
@@ -1101,7 +1102,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1143,7 +1144,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1182,7 +1183,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1215,7 +1216,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1246,7 +1247,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1277,7 +1278,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException
+        OrderInactiveSymbolException, ConnectionError
 
         """
         params.update({
@@ -1324,7 +1325,7 @@ class Client:
         :raises: ResponseException, APIException, OrderException,
         OrderMinAmountException, OrderMinPriceException,
         OrderMinTotalException, OrderUnknownSymbolException,
-        OrderInactiveSymbolException, NoAPISecretException
+        OrderInactiveSymbolException, NoAPISecretException, ConnectionError
 
 
         """
@@ -1366,7 +1367,8 @@ class Client:
                 "time": 1499827319559
             }
 
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
         return self._get('order', True, data=params)
@@ -1408,7 +1410,8 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
         return self._get('allOrders', True, data=params)
@@ -1432,21 +1435,11 @@ class Client:
         :param recvWindow: the number of milliseconds the request is valid for
         :type recvWindow: int
 
-        :returns: API response
-
-        .. code-block:: python
-
-            {
-                "symbol": "LTCBTC",
-                "origClientOrderId": "myOrder1",
-                "orderId": 1,
-                "clientOrderId": "cancelMyOrder1"
-            }
-
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
-        return self._delete('order', True, data=params)
+        res = self._delete('order', True, data=params)
 
     def open_orders(self, **params):
         """Get all open orders on a symbol.
@@ -1481,7 +1474,8 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
         return self._get('openOrders', True, data=params)
@@ -1522,7 +1516,8 @@ class Client:
                 ]
             }
 
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
         return self._get('account', True, data=params)
@@ -1554,7 +1549,8 @@ class Client:
                 ...
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError,
+        ConnectionError
 
         """
         res = self.account(**params)
@@ -1586,7 +1582,7 @@ class Client:
                 "locked": "0.00000000"
             }
 
-        :raises: ResponseException, APIException, KeyError
+        :raises: ResponseException, APIException, KeyError, ConnectionError
 
         """
         res = self.asset_balances(**params)
@@ -1625,7 +1621,8 @@ class Client:
                 }
             ]
 
-        :raises: ResponseException, APIException, NoAPISecretException
+        :raises: ResponseException, APIException, NoAPISecretException,
+        ConnectionError
 
         """
         return self._get('myTrades', True, data=params)
@@ -1652,7 +1649,7 @@ class Client:
                 ]
             }
 
-        :raises: WithdrawException
+        :raises: WithdrawException, ConnectionError
 
         """
         res = self._request_withdraw_api('get', 'accountStatus.html',
@@ -1699,7 +1696,8 @@ class Client:
                 "id":"7213fea8e94b4a5593d507237e5a555b"
             }
 
-        :raises: ResponseException, APIException, WithdrawException
+        :raises: ResponseException, APIException, WithdrawException,
+        ConnectionError
 
         """
         # force a name for the withdrawal if one not set
@@ -1743,7 +1741,7 @@ class Client:
                 "success": true
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._request_withdraw_api('get', 'depositHistory.html', True,
@@ -1794,7 +1792,7 @@ class Client:
                 "success": true
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._request_withdraw_api('get', 'withdrawHistory.html', True,
@@ -1821,7 +1819,7 @@ class Client:
                 "asset": "BNB"
             }
 
-        :raises: ResponseException, APIException
+        :raises: ResponseException, APIException, ConnectionError
 
         """
         return self._request_withdraw_api('get', 'depositAddress.html', True,
@@ -1848,7 +1846,8 @@ class Client:
                              "a65a1a5s61cv6a81va65sdf19v8a65a1"
             }
 
-        :raises: ResponseException, APIException, NoAPIKeyException
+        :raises: ResponseException, APIException, NoAPIKeyException,
+        ConnectionError
 
         """
         self._assert_api_key()
@@ -1870,7 +1869,8 @@ class Client:
 
             {}
 
-        :raises: ResponseException, APIException, NoAPIKeyException
+        :raises: ResponseException, APIException, NoAPIKeyException,
+        ConnectionError
 
         """
         self._assert_api_key()
@@ -1894,7 +1894,8 @@ class Client:
 
             {}
 
-        :raises: ResponseException, APIException, NoAPIKeyException
+        :raises: ResponseException, APIException, NoAPIKeyException,
+        ConnectionError
 
         """
         self._assert_api_key()
