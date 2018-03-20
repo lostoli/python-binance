@@ -55,10 +55,11 @@ class Client:
 
     def _create_api_uri(self, path, signed=True, version=PUBLIC_API_VERSION):
         v = self.PRIVATE_API_VERSION if signed else version
-        return '/'.join(self.API_URL, v, path)
+        return '/'.join([self.API_URL, v, path])
 
     def _create_withdraw_api_uri(self, path):
-        return '/'.join(self.WITHDRAW_API_URL, self.WITHDRAW_API_VERSION, path)
+        return '/'.join([
+                self.WITHDRAW_API_URL, self.WITHDRAW_API_VERSION, path])
 
     def _create_website_uri(self, path):
         return self.WEBSITE_URL + '/' + path
