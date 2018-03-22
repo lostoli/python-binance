@@ -42,7 +42,16 @@ as complete as the parent project. Among these improvements:
   that were already present are more sensibly organised.
 - Migration toward a coroutine-based websocket framework called websockets and
   away from the car fire that is Twisted has begun.
-- New convenience methods have been added to binance.Client.
+- New convenience methods have been added to binance.Client, like
+  aggregate_trades_iter(), which iterates reliably through long stretches of
+  aggregate trade history, encapsulating multiple calls to the aggTrades REST
+  API call.
+- API calls that fail due to network error are now retried automatically, when
+  it makes sense to do so.
+- If a network error occurs in the middle of an order placement, the order may
+  have still gone through. To address this, client order IDs are now generated
+  client-side automatically and used to track down any such orphaned orders,
+  thus transparently recovering from such network failures.
 
 For all changes, just look at the git history.
 

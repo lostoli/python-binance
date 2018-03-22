@@ -1429,8 +1429,8 @@ class Client:
     def cancel_order(self, retry=True, **params):
         """Cancel an active order. Either orderId or origClientOrderId must be
         sent. Retries by default and succeeds if the order was already
-        cancelled. If you don't want either of these, use cancel_order_raw() to
-        access the REST endpoint directly.
+        cancelled. If you don't want either of these behaviours, use
+        cancel_order_raw() to access the REST endpoint directly.
 
         https://github.com/binance-exchange/binance-official-api-docs
         /blob/master/rest-api.md#cancel-order-trade
