@@ -6,6 +6,8 @@ from operator import itemgetter
 import random
 import string
 from copy import deepcopy
+from collections import namedtuple
+from math import floor, log10
 
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
@@ -315,20 +317,43 @@ class Client:
 
         res = self.exchange_info()
 
-        for item in res['symbols']:
-            if item['symbol'] == symbol.upper():
-                return item
-
+        for i in res['symbols']:
+            if i['symbol'] == symbol:
+                return i
         return None
     def symbol_filters(self, symbol):
         """Return a symbol's filters as a dictionary with the filterType as
         the key."""
-        res = self.symbol_info(symbol)['filters']
-        fs = {}
-        for f in res:
+        fs = self.symbol_info(symbol)['filters']
+        return Client.filters_as_dict(fs)
+    @staticmethod
+    def filters_as_dict(fs):
+        fd = {}
+        for f in fs:
+            f = f.copy()
             t = f.pop('filterType')
-            fs[t] = f
-        return fs
+            fd[t] = f
+        return fd
+    @staticmethod
+    def precisions_from_symbol_info(i):
+        def ndigits(stepstr):
+            return floor(-log10(float(stepstr)))
+        Precisions = namedtuple('Precisions',
+                ['quote', 'base', 'price', 'lot'])
+        fd = Client.filters_as_dict(i['filters'])
+        return Precisions(i['quotePrecision'], i['baseAssetPrecision'],
+                ndigits(fd['PRICE_FILTER']['tickSize']),
+                ndigits(fd['LOT_SIZE']['stepSize']))
+
+
+    def symbol_precisions(self, symbol=None):
+        if symbol is not None:
+            return Client.precisions_from_symbol_info(self.symbol_info(symbol))
+        res = self.exchange_info()
+        ps = {}
+        for i in res['symbols']:
+            ps[i['symbol']] = Client.precisions_from_symbol_info(i)
+        return ps
 
     # General Endpoints
 
