@@ -104,8 +104,8 @@ class Client:
     def _request(self, method, uri, signed, force_params=False, retry=False,
             **kwargs):
         # Retry is meant to be used by the application to enable or disable
-        # retrying. The default should really only be used by read-only stuff
-        # like queries, and not for stuff like order placement. Retrying for
+        # retrying. Only read-only stuff like queries should default to
+        # retrying, and not stuff like order placement. Retrying for
         # remote state-modifying calls should be handled on a per-call basis.
 
         # Set default requests timeout.
@@ -117,38 +117,45 @@ class Client:
 
         # kwargs gets changed every attempt, so remember the original kwargs.
         kwargs0 = kwargs
-        try:
-            kwargs = deepcopy(kwargs0)
+        while True:
+            try:
+                kwargs = deepcopy(kwargs0)
 
-            if signed:
-                # Generate signature.
-                kwargs['data']['timestamp'] = int(time.time() * 1000)
-                kwargs['data']['signature'] = \
-                        self._generate_signature(kwargs['data'])
-            if 'data' in kwargs0:
-                # Find any requests params passed and apply them.
-                if 'requests_params' in kwargs['data']:
-                    # Merge requests params into kwargs.
-                    kwargs.update(kwargs['data']['requests_params'])
-                    del(kwargs['data']['requests_params'])
+                if signed:
+                    # Generate signature.
+                    kwargs['data']['timestamp'] = int(time.time() * 1000)
+                    kwargs['data']['signature'] = \
+                            self._generate_signature(kwargs['data'])
+                if 'data' in kwargs0:
+                    # Find any requests params passed and apply them.
+                    if 'requests_params' in kwargs['data']:
+                        # Merge requests params into kwargs.
+                        kwargs.update(kwargs['data']['requests_params'])
+                        del(kwargs['data']['requests_params'])
 
-                # Sort get or post params to match signature order.
-                kwargs['data'] = self._order_params(kwargs['data'])
+                    # Sort get or post params to match signature order.
+                    kwargs['data'] = self._order_params(kwargs['data'])
 
-                # If this is a get request, assign data array to params value
-                # for requests lib.
-                if method == 'get' or force_params:
-                    kwargs['params'] = kwargs['data']
-                    del(kwargs['data'])
-            response = getattr(self.session, method)(uri, **kwargs)
-            return self._handle_response(response)
-        except (requests.exceptions.ConnectionError,
-                requests.exceptions.ReadTimeout):
-            if not retry:
-                # Error handling for these two cases is always the same, so
-                # merge the two cases into a single Binance connection error.
-                # If I'm wrong, this can be changed back again.
-                raise bex.ConnectionError
+                    # If this is a get request, assign data array to params
+                    # value for requests lib.
+                    if method == 'get' or force_params:
+                        kwargs['params'] = kwargs['data']
+                        del(kwargs['data'])
+                response = getattr(self.session, method)(uri, **kwargs)
+                return self._handle_response(response)
+            except (requests.exceptions.ConnectionError,
+                    requests.exceptions.ReadTimeout):
+                if not retry:
+                    # Error handling for these two cases is always the same, so
+                    # merge the two cases into a single Binance connection
+                    # error.  If I'm wrong, this can be changed back again.
+                    raise bex.ConnectionError
+            except APIException as e:
+                # Ignore the lots and lots of spurious E_UNKNOWNs. This is the
+                # one time retrying should always be attempted. This shouldn't
+                # be here, but oh well.
+                if e.code != bc.E_UNKNOWN:
+                    raise
             time.sleep(1)
 
     def _request_api(self, method, path, signed=False,
