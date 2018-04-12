@@ -151,10 +151,11 @@ class Client:
                     # error.  If I'm wrong, this can be changed back again.
                     raise bex.ConnectionError
             except APIException as e:
-                # Ignore the lots and lots of spurious E_UNKNOWNs. This is the
+                # Ignore the lots and lots of spurious errors. This is the
                 # one time retrying should always be attempted. This shouldn't
-                # be here, but oh well.
-                if e.code != bc.E_UNKNOWN:
+                # be a problem, but it is. God damn it, binance. Fix this.
+                if e.code != bc.E_UNKNOWN and \
+                        e.code != E_INVALID_TIMESTAMP:
                     raise
             time.sleep(1)
 
