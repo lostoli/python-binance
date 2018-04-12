@@ -155,7 +155,7 @@ class Client:
                 # one time retrying should always be attempted. This shouldn't
                 # be a problem, but it is. God damn it, binance. Fix this.
                 if e.code != bc.E_UNKNOWN and \
-                        e.code != E_INVALID_TIMESTAMP:
+                        e.code != bc.E_INVALID_TIMESTAMP:
                     raise
             time.sleep(1)
 
