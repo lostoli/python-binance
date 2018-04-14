@@ -1457,9 +1457,16 @@ class Client:
         """
         return self._get('allOrders', True, data=params)
 
+    @staticmethod
+    def order_is_open(query_res):
+        """Determines whether an order is open, given the result of a call to
+        Client.query_order()."""
+        return query_res['status'] in \
+                {bc.ORDER_STATUS_NEW, bc.ORDER_STATUS_PARTIALLY_FILLED}
+
     def cancel_order_raw(self, retry=False, **params):
         return self._delete('order', True, data=params, retry=retry)
-    def cancel_order(self, retry=True, **params):
+    def cancel_order(self, retry=True, check=True, **params):
         """Cancel an active order. Either orderId or origClientOrderId must be
         sent. Retries by default and succeeds if the order was already
         cancelled. If you don't want either of these behaviours, use
@@ -1468,6 +1475,11 @@ class Client:
         https://github.com/binance-exchange/binance-official-api-docs
         /blob/master/rest-api.md#cancel-order-trade
 
+        :param check: Enables checking. The function will not return
+        until the order is cancelled. It will return the result of
+        Client.query_order(), which it used to determine whether the order was
+        actually cancelled.
+        :type check: bool
         :param symbol: required
         :type symbol: str
         :param orderId: The unique order id
@@ -1490,6 +1502,12 @@ class Client:
             if e.code != bc.E_CANCEL_REJECTED or \
                     e.message != bc.EMSG_UNKNOWN_ORDER:
                 raise
+        if check:
+            while True:
+                res = self.query_order(retry=retry, **params)
+                if not order_is_open(res):
+                    return res
+                time.sleep(1)
 
     def open_orders(self, **params):
         """Get all open orders on a symbol.
