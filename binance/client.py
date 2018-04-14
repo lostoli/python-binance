@@ -1372,7 +1372,7 @@ class Client:
         """
         return self._post('order/test', True, data=params)
 
-    def query_order(self, **params):
+    def query_order(self, retry=True, **params):
         """Check an order's status. Either orderId or origClientOrderId must be
         sent.
 
@@ -1412,7 +1412,7 @@ class Client:
         ConnectionError
 
         """
-        return self._get('order', True, data=params, retry=True)
+        return self._get('order', True, data=params, retry=retry)
 
     def all_orders(self, **params):
         """Get all account orders; active, canceled, or filled.
