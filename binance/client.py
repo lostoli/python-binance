@@ -1505,7 +1505,7 @@ class Client:
         if check:
             while True:
                 res = self.query_order(retry=retry, **params)
-                if not order_is_open(res):
+                if not self.order_is_open(res):
                     return res
                 time.sleep(1)
 
