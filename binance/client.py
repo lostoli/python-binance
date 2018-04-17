@@ -354,8 +354,8 @@ class Client:
         if symbol is not None:
             return Client.precisions_from_symbol_info(self.symbol_info(symbol))
         ps = {}
-        for i in self.symbol_info():
-            ps[i['symbol']] = Client.precisions_from_symbol_info(i)
+        for symbol, info in self.symbol_info().items():
+            ps[symbol] = Client.precisions_from_symbol_info(info)
         return ps
     @staticmethod
     def precisions_from_symbol_info(i):
