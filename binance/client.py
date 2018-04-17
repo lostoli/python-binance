@@ -16,6 +16,9 @@ import binance.exceptions as bex
 import binance.constants as bc
 
 
+Precisions = namedtuple('Precisions',
+        ['quote', 'base', 'price', 'lot'])
+
 class Client:
 
     API_URL = 'https://api.binance.com/api'
@@ -282,10 +285,11 @@ class Client:
 
         return self._get('exchangeInfo', retry=True)
 
-    def symbol_info(self, symbol):
+    def symbol_info(self, symbol=None):
         """Return information about a symbol
 
-        :param symbol: required e.g BNBBTC
+        :param symbol: e.g. BNBBTC. If unspecified, the symbol info of all
+        symbols is returned in a dictionary.
         :type symbol: str
 
         :returns: Dict if found, None if not
@@ -293,7 +297,6 @@ class Client:
         .. code-block:: python
 
             {
-                "symbol": "ETHBTC",
                 "status": "TRADING",
                 "baseAsset": "ETH",
                 "baseAssetPrecision": 8,
@@ -301,22 +304,21 @@ class Client:
                 "quotePrecision": 8,
                 "orderTypes": ["LIMIT", "MARKET"],
                 "icebergAllowed": false,
-                "filters": [
-                    {
-                        "filterType": "PRICE_FILTER",
+                "filters": {
+                    "PRICE_FILTER": {
                         "minPrice": "0.00000100",
                         "maxPrice": "100000.00000000",
                         "tickSize": "0.00000100"
-                    }, {
-                        "filterType": "LOT_SIZE",
+                    },
+                    "LOT_SIZE": {
                         "minQty": "0.00100000",
                         "maxQty": "100000.00000000",
                         "stepSize": "0.00100000"
-                    }, {
-                        "filterType": "MIN_NOTIONAL",
+                    },
+                    "MIN_NOTIONAL": {
                         "minNotional": "0.00100000"
                     }
-                ]
+                }
             }
 
         :raises: ResponseException, APIException, ConnectionError
@@ -325,15 +327,16 @@ class Client:
 
         res = self.exchange_info()
 
-        for i in res['symbols']:
-            if i['symbol'] == symbol:
-                return i
-        return None
-    def symbol_filters(self, symbol):
-        """Return a symbol's filters as a dictionary with the filterType as
-        the key."""
-        fs = self.symbol_info(symbol)['filters']
-        return Client.filters_as_dict(fs)
+        sis = {}
+        for si in res['symbols']:
+            n = si.pop('symbol')
+            si['filters'] = self.filters_as_dict(si['filters'])
+            sis[n] = si
+
+        if symbol is None:
+            return sis
+        else:
+            return sis.get(symbol, None)
     @staticmethod
     def filters_as_dict(fs):
         fd = {}
@@ -342,26 +345,26 @@ class Client:
             t = f.pop('filterType')
             fd[t] = f
         return fd
-    @staticmethod
-    def precisions_from_symbol_info(i):
-        def ndigits(stepstr):
-            return floor(-log10(float(stepstr)))
-        Precisions = namedtuple('Precisions',
-                ['quote', 'base', 'price', 'lot'])
-        fd = Client.filters_as_dict(i['filters'])
-        return Precisions(i['quotePrecision'], i['baseAssetPrecision'],
-                ndigits(fd['PRICE_FILTER']['tickSize']),
-                ndigits(fd['LOT_SIZE']['stepSize']))
-
+    def symbol_filters(self, symbol):
+        """Return a symbol's filters as a dictionary with the filterType as
+        the key."""
+        return self.symbol_info(symbol)['filters']
 
     def symbol_precisions(self, symbol=None):
         if symbol is not None:
             return Client.precisions_from_symbol_info(self.symbol_info(symbol))
-        res = self.exchange_info()
         ps = {}
-        for i in res['symbols']:
+        for i in self.symbol_info():
             ps[i['symbol']] = Client.precisions_from_symbol_info(i)
         return ps
+    @staticmethod
+    def precisions_from_symbol_info(i):
+        def ndigits(stepstr):
+            return floor(-log10(float(stepstr)))
+        fd = i['filters']
+        return Precisions(i['quotePrecision'], i['baseAssetPrecision'],
+                ndigits(fd['PRICE_FILTER']['tickSize']),
+                ndigits(fd['LOT_SIZE']['stepSize']))
 
     # General Endpoints
 
