@@ -94,15 +94,18 @@ class SocketManager(threading.Thread):
         return path
 
     def start_depth_socket(self, symbol, callback, depth=None):
-        """Start a websocket for symbol market depth returning either a diff or a partial book
+        """Start a websocket for symbol market depth returning either a diff or
+        a partial book
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#partial-book-depth-streams
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md#partial-book-depth-streams
 
         :param symbol: required
         :type symbol: str
         :param callback: callback function to handle messages
         :type callback: function
-        :param depth: optional Number of depth entries to return, default None. If passed returns a partial book instead of a diff
+        :param depth: optional Number of depth entries to return, default None.
+        If passed returns a partial book instead of a diff
         :type depth: str
 
         :returns: connection key string if successful, False otherwise
@@ -162,10 +165,12 @@ class SocketManager(threading.Thread):
             socket_name = '{}{}'.format(socket_name, depth)
         return self._start_socket(socket_name, callback)
 
-    def start_kline_socket(self, symbol, callback, interval=bc.KLINE_INTERVAL_1MINUTE):
+    def start_kline_socket(self, symbol, callback,
+            interval=bc.KLINE_INTERVAL_1MINUTE):
         """Start a websocket for symbol kline data
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#klinecandlestick-streams
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md#klinecandlestick-streams
 
         :param symbol: required
         :type symbol: str
@@ -181,27 +186,27 @@ class SocketManager(threading.Thread):
         .. code-block:: python
 
             {
-                "e": "kline",					# event type
-                "E": 1499404907056,				# event time
-                "s": "ETHBTC",					# symbol
+                "e": "kline",                  # event type
+                "E": 1499404907056,            # event time
+                "s": "ETHBTC",                 # symbol
                 "k": {
-                    "t": 1499404860000, 		# start time of this bar
-                    "T": 1499404919999, 		# end time of this bar
-                    "s": "ETHBTC",				# symbol
-                    "i": "1m",					# interval
-                    "f": 77462,					# first trade id
-                    "L": 77465,					# last trade id
-                    "o": "0.10278577",			# open
-                    "c": "0.10278645",			# close
-                    "h": "0.10278712",			# high
-                    "l": "0.10278518",			# low
-                    "v": "17.47929838",			# volume
-                    "n": 4,						# number of trades
-                    "x": false,					# whether this bar is final
-                    "q": "1.79662878",			# quote volume
-                    "V": "2.34879839",			# volume of active buy
-                    "Q": "0.24142166",			# quote volume of active buy
-                    "B": "13279784.01349473"	# can be ignored
+                    "t": 1499404860000,        # start time of this bar
+                    "T": 1499404919999,        # end time of this bar
+                    "s": "ETHBTC",             # symbol
+                    "i": "1m",                 # interval
+                    "f": 77462,                # first trade id
+                    "L": 77465,                # last trade id
+                    "o": "0.10278577",         # open
+                    "c": "0.10278645",         # close
+                    "h": "0.10278712",         # high
+                    "l": "0.10278518",         # low
+                    "v": "17.47929838",        # volume
+                    "n": 4,                    # number of trades
+                    "x": false,                # whether this bar is final
+                    "q": "1.79662878",         # quote volume
+                    "V": "2.34879839",         # volume of active buy
+                    "Q": "0.24142166",         # quote volume of active buy
+                    "B": "13279784.01349473"   # can be ignored
                     }
             }
         """
@@ -244,7 +249,8 @@ class SocketManager(threading.Thread):
     def start_aggtrade_socket(self, symbol, callback):
         """Start a websocket for symbol trade data
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#aggregate-trade-streams
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md#aggregate-trade-streams
 
         :param symbol: required
         :type symbol: str
@@ -258,17 +264,17 @@ class SocketManager(threading.Thread):
         .. code-block:: python
 
             {
-                "e": "aggTrade",		# event type
-                "E": 1499405254326,		# event time
-                "s": "ETHBTC",			# symbol
-                "a": 70232,				# aggregated tradeid
-                "p": "0.10281118",		# price
-                "q": "8.15632997",		# quantity
-                "f": 77489,				# first breakdown trade id
-                "l": 77489,				# last breakdown trade id
-                "T": 1499405254324,		# trade time
-                "m": false,				# whether buyer is a maker
-                "M": true				# can be ignored
+                "e": "aggTrade",    # event type
+                "E": 1499405254326, # event time
+                "s": "ETHBTC",      # symbol
+                "a": 70232,         # aggregated tradeid
+                "p": "0.10281118",  # price
+                "q": "8.15632997",  # quantity
+                "f": 77489,         # first breakdown trade id
+                "l": 77489,         # last breakdown trade id
+                "T": 1499405254324, # trade time
+                "m": false,         # whether buyer is a maker
+                "M": true           # can be ignored
             }
 
         """
@@ -277,7 +283,8 @@ class SocketManager(threading.Thread):
     def start_symbol_ticker_socket(self, symbol, callback):
         """Start a websocket for a symbol's ticker data
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#individual-symbol-ticker-streams
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md#individual-symbol-ticker-streams
 
         :param symbol: required
         :type symbol: str
@@ -324,7 +331,8 @@ class SocketManager(threading.Thread):
 
         By default all markets are included in an array.
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#all-market-tickers-stream
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md#all-market-tickers-stream
 
         :param callback: callback function to handle messages
         :type callback: function
@@ -367,11 +375,14 @@ class SocketManager(threading.Thread):
         """Start a multiplexed socket using a list of socket names.
         User stream sockets can not be included.
 
-        Symbols in socket name must be lowercase i.e bnbbtc@aggTrade, neobtc@ticker
+        Symbols in socket name must be lowercase i.e bnbbtc@aggTrade,
+        neobtc@ticker
 
-        Combined stream events are wrapped as follows: {"stream":"<streamName>","data":<rawPayload>}
+        Combined stream events are wrapped as follows:
+        {"stream":"<streamName>","data":<rawPayload>}
 
-        https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/web-socket-streams.md
 
         :param streams: list of stream names in lower case
         :type streams: list
@@ -401,7 +412,8 @@ class SocketManager(threading.Thread):
         if self._user_listen_key:
             # cleanup any sockets with this key
             for conn_key in self._conns:
-                if len(conn_key) >= 60 and conn_key[:60] == self._user_listen_key:
+                if len(conn_key) >= 60 and \
+                        conn_key[:60] == self._user_listen_key:
                     self.stop_socket(conn_key)
                     break
         self._user_listen_key = self._client.stream_listen_key()
@@ -414,7 +426,8 @@ class SocketManager(threading.Thread):
         return conn_key
 
     def _start_user_timer(self):
-        self._user_timer = threading.Timer(self._user_timeout, self._keepalive_user_socket)
+        self._user_timer = threading.Timer(self._user_timeout,
+                self._keepalive_user_socket)
         self._user_timer.setDaemon(True)
         self._user_timer.start()
 
@@ -437,7 +450,8 @@ class SocketManager(threading.Thread):
             return
 
         # disable reconnecting if we are closing
-        self._conns[conn_key].factory = WebSocketClientFactory(self.STREAM_URL + 'tmp_path')
+        self._conns[conn_key].factory = \
+                WebSocketClientFactory(self.STREAM_URL + 'tmp_path')
         self._conns[conn_key].disconnect()
         del(self._conns[conn_key])
 
@@ -488,7 +502,7 @@ class Websocket:
         return self
     async def single(name):
         return await Websocket.new('ws/'+name)
-        
+
     async def __aenter__(self):
         return self
     async def __aexit__(self, *excinfo):
@@ -509,7 +523,7 @@ class Websocket:
         while True:
             try:
                 return json.loads(await self.ws.recv())
-            except websockets.ConnectionClosed:
+            except (ConnectionError, websockets.ConnectionClosed):
                 await self.disconnect()
                 await asyncio.sleep(.1)
                 await self.connect()
@@ -523,7 +537,8 @@ def aggregate_trades_name(symbol):
 async def aggregate_trades(symbol):
     """return a websocket for symbol trade data
 
-    https://github.com/binance-exchange/binance-official-api-docs/blob/master/web-socket-streams.md#aggregate-trade-streams
+    https://github.com/binance-exchange/binance-official-api-docs
+    /blob/master/web-socket-streams.md#aggregate-trade-streams
 
     :param symbol: required
     :type symbol: str
