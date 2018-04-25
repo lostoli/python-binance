@@ -367,7 +367,6 @@ class Client:
                 price=ndigits(fd['PRICE_FILTER']['tickSize']),
                 quantity=ndigits(fd['LOT_SIZE']['stepSize']),
                 quantity_min=float(fd['MIN_NOTIONAL']['minNotional']))
-        ['quote', 'base', 'price', 'order', 'order_min'])
 
     # General Endpoints
 
