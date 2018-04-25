@@ -17,7 +17,7 @@ import binance.constants as bc
 
 
 Precisions = namedtuple('Precisions',
-        ['quote', 'base', 'price', 'lot'])
+        ['quote', 'base', 'price', 'quantity', 'quantity_min'])
 
 class Client:
 
@@ -362,9 +362,12 @@ class Client:
         def ndigits(stepstr):
             return floor(-log10(float(stepstr)))
         fd = i['filters']
-        return Precisions(i['quotePrecision'], i['baseAssetPrecision'],
-                ndigits(fd['PRICE_FILTER']['tickSize']),
-                ndigits(fd['LOT_SIZE']['stepSize']))
+        return Precisions(quote=i['quotePrecision'],
+                base=i['baseAssetPrecision'],
+                price=ndigits(fd['PRICE_FILTER']['tickSize']),
+                quantity=ndigits(fd['LOT_SIZE']['stepSize']),
+                quantity_min=float(fd['MIN_NOTIONAL']['minNotional']))
+        ['quote', 'base', 'price', 'order', 'order_min'])
 
     # General Endpoints
 
