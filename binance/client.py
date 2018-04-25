@@ -8,6 +8,7 @@ import string
 from copy import deepcopy
 from collections import namedtuple
 from math import floor, log10
+from traceback import print_exc
 
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
@@ -157,9 +158,18 @@ class Client:
                 # Ignore the lots and lots of spurious errors. This is the
                 # one time retrying should always be attempted. This shouldn't
                 # be a problem, but it is. God damn it, binance. Fix this.
-                if e.code != bc.E_UNKNOWN and \
-                        e.code != bc.E_INVALID_TIMESTAMP:
+                if e.code not in {bc.E_NEW_ORDER_REJECTED, bc.E_UNKNOWN,
+                        bc.E_INVALID_TIMESTAMP}:
                     raise
+                if e.code == bc.E_NEW_ORDER_REJECTED and \
+                        e.msg != bc.EMSG_NO_TRADES:
+                    # This one's a real oddball. It in fact happens not when a
+                    # new order is placed but when an open order is cancelled.
+                    # Definitely a bug of some kind, if only in the chosen
+                    # error message.
+                    raise
+                print('Spurious exception:')
+                print_exc()
             time.sleep(1)
 
     def _request_api(self, method, path, signed=False,
