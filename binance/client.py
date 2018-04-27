@@ -156,8 +156,7 @@ class Client:
                     raise bex.ConnectionError
             except APIException as e:
                 # Ignore the lots and lots of spurious errors. This is the
-                # one time retrying should always be attempted. This shouldn't
-                # be a problem, but it is. God damn it, binance. Fix this.
+                # one time retrying should always be attempted.
                 if e.code not in {bc.E_NEW_ORDER_REJECTED, bc.E_UNKNOWN,
                         bc.E_INVALID_TIMESTAMP}:
                     raise
