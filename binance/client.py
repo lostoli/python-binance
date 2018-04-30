@@ -167,8 +167,8 @@ class Client:
                     # Definitely a bug of some kind, if only in the chosen
                     # error message.
                     raise
-                print('Spurious exception:')
-                print_exc()
+                #print('Spurious exception:')
+                #print_exc()
             time.sleep(1)
 
     def _request_api(self, method, path, signed=False,
