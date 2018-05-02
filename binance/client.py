@@ -161,7 +161,7 @@ class Client:
                         bc.E_INVALID_TIMESTAMP}:
                     raise
                 if e.code == bc.E_NEW_ORDER_REJECTED and \
-                        e.msg != bc.EMSG_NO_TRADES:
+                        e.message != bc.EMSG_NO_TRADES:
                     # This one's a real oddball. It in fact happens not when a
                     # new order is placed but when an open order is cancelled.
                     # Definitely a bug of some kind, if only in the chosen
