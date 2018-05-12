@@ -1436,8 +1436,8 @@ class Client:
                     raise
                 print('Query returned E_NO_SUCH_ORDER. Probably spurious.')
                 if tries < 0:
-                    print('Query has returned too many E_NO_SUCH_ORDER errors.
-                            Not spurious after all.')
+                    print('Query has returned too many E_NO_SUCH_ORDER '
+                            'errors.  Not spurious after all.')
                     raise
             time.sleep(1)
 
