@@ -1426,7 +1426,20 @@ class Client:
         ConnectionError
 
         """
-        return self._get('order', True, data=params, retry=retry)
+        tries = 3
+        while True:
+            tries -= 1
+            try:
+                return self._get('order', True, data=params, retry=retry)
+            except bex.APIException as e:
+                if e.code != bc.E_NO_SUCH_ORDER:
+                    raise
+                print('Query returned E_NO_SUCH_ORDER. Probably spurious.')
+                if tries < 0:
+                    print('Query has returned too many E_NO_SUCH_ORDER errors.
+                            Not spurious after all.')
+                    raise
+            time.sleep(1)
 
     def all_orders(self, **params):
         """Get all account orders; active, canceled, or filled.
