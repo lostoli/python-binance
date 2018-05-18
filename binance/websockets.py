@@ -523,7 +523,8 @@ class Websocket:
         while True:
             try:
                 return json.loads(await self.ws.recv())
-            except (ConnectionError, websockets.ConnectionClosed):
+            except (ConnectionError, websockets.ConnectionClosed,
+                    websockets.InvalidStatusCode):
                 await self.disconnect()
                 await asyncio.sleep(.1)
                 await self.connect()
