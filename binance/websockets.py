@@ -510,8 +510,12 @@ class Websocket:
 
     async def connect(self):
         """For using Websocket outside of an `async with` statement."""
-        self.ws = await websockets.connect(
-                'wss://stream.binance.com:9443/'+self._stream)
+        while True:
+            try:
+                self.ws = await websockets.connect(
+                        'wss://stream.binance.com:9443/'+self._stream)
+            except websockets.InvalidStatusCode:
+                await asyncio.sleep(.1)
     async def disconnect(self):
         """For using Websocket outside of an `async with` statement. A
         coroutine."""
@@ -523,8 +527,7 @@ class Websocket:
         while True:
             try:
                 return json.loads(await self.ws.recv())
-            except (ConnectionError, websockets.ConnectionClosed,
-                    websockets.InvalidStatusCode):
+            except (ConnectionError, websockets.ConnectionClosed):
                 await self.disconnect()
                 await asyncio.sleep(.1)
                 await self.connect()
