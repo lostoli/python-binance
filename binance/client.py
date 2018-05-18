@@ -1536,6 +1536,10 @@ class Client:
                     return res
                 time.sleep(1)
 
+    def cancel_all_orders(self):
+        o = self.open_orders()
+
+
     def open_orders(self, **params):
         """Get all open orders on a symbol.
 

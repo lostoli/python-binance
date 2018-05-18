@@ -515,6 +515,8 @@ class Websocket:
                 self.ws = await websockets.connect(
                         'wss://stream.binance.com:9443/'+self._stream)
             except websockets.InvalidStatusCode:
+                print('Failed to connect to websocket due to '
+                        'InvalidStatusCode. Retrying...')
                 await asyncio.sleep(.1)
     async def disconnect(self):
         """For using Websocket outside of an `async with` statement. A
