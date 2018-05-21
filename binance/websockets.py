@@ -512,6 +512,7 @@ class Websocket:
         """For using Websocket outside of an `async with` statement."""
         while True:
             try:
+                print('connecting to websocket...')
                 self.ws = await websockets.connect(
                         'wss://stream.binance.com:9443/'+self._stream)
             except websockets.InvalidStatusCode:
