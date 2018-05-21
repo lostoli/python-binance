@@ -49,14 +49,24 @@ WS_DEPTH_20 = '20'
 
 # For munching upon the data returned by Client.aggregate_trades() and
 # websockets.aggregate_trades().
-AGG_ID             = 'a'  # noqa: E221
-AGG_PRICE          = 'p'  # noqa: E221
-AGG_QUANTITY       = 'q'  # noqa: E221
-AGG_FIRST_TRADE_ID = 'f'  # noqa: E221
-AGG_LAST_TRADE_ID  = 'l'  # noqa: E221
-AGG_TIME           = 'T'  # noqa: E221
-AGG_BUYER_MAKES    = 'm'  # noqa: E221
-AGG_BEST_MATCH     = 'M'  # noqa: E221
+AGG_ID             = 'a'
+AGG_PRICE          = 'p'
+AGG_QUANTITY       = 'q'
+AGG_FIRST_TRADE_ID = 'f'
+AGG_LAST_TRADE_ID  = 'l'
+AGG_TIME           = 'T'
+AGG_BUYER_MAKES    = 'm'
+AGG_BEST_MATCH     = 'M'
+
+# Ditto, websockets.trades().
+TRADE_ID              = "t"
+TRADE_PRICE           = "p"
+TRADE_QUANTITY        = "q"
+TRADE_BUYER_ORDER_ID  = "b"
+TRADE_SELLER_ORDER_ID = "a"
+TRADE_TIME            = "T"
+TRADE_BUYER_MAKES     = "m"
+TRADE_IGNORE          = "M"
 
 # Common keys in many websocket events.
 WS_EVENT_TYPE = 'e'
@@ -112,7 +122,8 @@ E_NO_SUCH_ORDER = -2013
 E_BAD_API_KEY_FMT = -2014
 E_REJECTED_MBX_KEY = -2015
 
-# Messages for -1010 ERROR_MSG_RECEIVED, -2010 NEW_ORDER_REJECTED, and -2011 CANCEL_REJECTED
+# Messages for -1010 ERROR_MSG_RECEIVED, -2010 NEW_ORDER_REJECTED, and -2011
+# CANCEL_REJECTED
 EMSG_ACTION_DISABLED = 'This action disabled is on this account.'
 EMSG_BALANCE = 'Account has insufficient balance for requested action.'
 EMSG_CANCEL_INVALID = 'Cancel order is invalid. Check origClOrdId and orderId.'

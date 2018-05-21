@@ -552,3 +552,8 @@ async def aggregate_trades(symbol):
     :returns: A Websocket object.
     """
     return await Websocket.single(aggregate_trades_name(symbol))
+
+def trades_name(symbol):
+    return symbol.lower()+'@trade'
+async def trades(symbol):
+    return await Websocket.single(trades_name(symbol))
