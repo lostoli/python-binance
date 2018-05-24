@@ -8,7 +8,6 @@ import string
 from copy import deepcopy
 from collections import namedtuple
 from math import floor, log10
-from traceback import print_exc
 
 from .helpers import interval_to_milliseconds
 from .exceptions import APIException, ResponseException, WithdrawException, \
@@ -157,9 +156,14 @@ class Client:
             except APIException as e:
                 # Ignore the lots and lots of spurious errors. This is the
                 # one time retrying should always be attempted.
-                if e.code not in {bc.E_NEW_ORDER_REJECTED, bc.E_UNKNOWN,
-                        bc.E_INVALID_TIMESTAMP}:
+                if e.code is not None and \
+                        e.code not in {bc.E_NEW_ORDER_REJECTED, bc.E_UNKNOWN,
+                            bc.E_INVALID_TIMESTAMP}:
                     raise
+                if e.code is None:
+                    print(e.message)
+                    if not retry:
+                        raise bex.ConnectionError
                 if e.code == bc.E_NEW_ORDER_REJECTED and \
                         e.message != bc.EMSG_NO_TRADES:
                     # This one's a real oddball. It in fact happens not when a
@@ -1537,8 +1541,8 @@ class Client:
                 time.sleep(1)
 
     def cancel_all_orders(self):
-        o = self.open_orders()
-
+        for o in self.open_orders():
+            self.cancel_order(symbol=o['symbol'], orderId=o['orderId'])
 
     def open_orders(self, **params):
         """Get all open orders on a symbol.

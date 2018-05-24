@@ -2,23 +2,23 @@ import binance.constants as bc
 
 class APIException(Exception):
     def __init__(self, response):
-        self.status_code = 0
-        code = None
+        self.request = getattr(response, 'request', None)
+        self.response = response
+        self.status_code = response.status_code
+
+        self.code = None
         try:
             json_res = response.json()
-            code = int(json_res['code'])
+            self.code = int(json_res['code'])
         except ValueError:
             self.message = 'Invalid JSON error message from Binance: ' \
                     '{}'.format(response.text)
         else:
-            self.code = code
             self.message = json_res['msg']
-        self.status_code = response.status_code
-        self.response = response
-        self.request = getattr(response, 'request', None)
 
     def __str__(self):  # pragma: no cover
-        return 'APIError(code={}): {}'.format(self.code, self.message)
+        return 'APIError(code={}, status_code={}): {}'.format(
+                self.code, self.status_code, self.message)
 
 
 class ResponseException(Exception):
