@@ -155,7 +155,7 @@ class Client:
                     raise bex.ConnectionError
             except APIException as e:
                 # Ignore the lots and lots of spurious errors. This is the
-                # one time retrying should always be attempted.
+                # one time retrying should always be attempted...
                 if e.code is not None and \
                         e.code not in {bc.E_NEW_ORDER_REJECTED, bc.E_UNKNOWN,
                             bc.E_INVALID_TIMESTAMP}:
@@ -163,6 +163,7 @@ class Client:
                 if e.code is None:
                     print(e.message)
                     if not retry:
+                        # ...except when the error message itself is garbage.
                         raise bex.ConnectionError
                 if e.code == bc.E_NEW_ORDER_REJECTED and \
                         e.message != bc.EMSG_NO_TRADES:
