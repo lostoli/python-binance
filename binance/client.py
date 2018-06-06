@@ -1431,7 +1431,7 @@ class Client:
         ConnectionError
 
         """
-        tries = 3
+        tries = 10
         while True:
             tries -= 1
             try:
