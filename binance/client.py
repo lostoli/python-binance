@@ -885,8 +885,9 @@ class Client:
         """
         return self._get('ticker/24hr', data=params)
 
-    def symbol_ticker(self, **params):
-        """Latest price for a symbol or symbols.
+    def price(self, **params):
+        """Latest price for a symbol. If no symbol is specified, the prices of
+        all symbols are returned in a dict with the symbol name as the key.
 
         https://github.com/binance-exchange/binance-official-api-docs
         /blob/master/rest-api.md#24hr-ticker-price-change-statistics
@@ -898,31 +899,29 @@ class Client:
 
         .. code-block:: python
 
-            {
-                "symbol": "LTCBTC",
-                "price": "4.00000200"
-            }
+            4.00000200
 
         OR
 
         .. code-block:: python
 
-            [
-                {
-                    "symbol": "LTCBTC",
-                    "price": "4.00000200"
-                },
-                {
-                    "symbol": "ETHBTC",
-                    "price": "0.07946600"
-                }
-            ]
+            {
+                "LTCBTC": 4.00000200,
+                "ETHBTC": 0.07946600,
+                ...
+            }
 
         :raises: ResponseException, APIException, ConnectionError
 
         """
-        return self._get('ticker/price', data=params,
+        res = self._get('ticker/price', data=params,
                 version=self.PRIVATE_API_VERSION)
+        if 'symbol' in params:
+            return float(res['price'])
+        d = {}
+        for sp in res:
+            d[t['symbol']] = float(sp['price'])
+        return d
 
     def orderbook_ticker(self, **params):
         """Latest price for a symbol or symbols.
