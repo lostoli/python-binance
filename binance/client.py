@@ -920,7 +920,7 @@ class Client:
             return float(res['price'])
         d = {}
         for sp in res:
-            d[t['symbol']] = float(sp['price'])
+            d[sp['symbol']] = float(sp['price'])
         return d
 
     def orderbook_ticker(self, **params):
