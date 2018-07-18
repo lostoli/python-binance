@@ -422,7 +422,7 @@ class Client:
 
     # Market Data Endpoints
 
-    def all_tickers(self):
+    def all_tickers(self, **params):
         """Latest price for all symbols.
 
         https://www.binance.com/restapipub.html#symbols-price-ticker
@@ -445,7 +445,7 @@ class Client:
         :raises: ResponseException, APIException, ConnectionError
 
         """
-        return self._get('ticker/allPrices')
+        return self._get('ticker/price', data=params)
 
     def orderbook_tickers(self):
         """Best price/qty on the order book for all symbols.
