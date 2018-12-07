@@ -923,6 +923,27 @@ class Client:
             d[sp['symbol']] = float(sp['price'])
         return d
 
+    def avgPrice(self, **params):
+        """Average price information for a symbol. 
+
+        https://github.com/binance-exchange/binance-official-api-docs
+        /blob/master/rest-api.md#current-average-price
+
+        :param symbol:
+        :type symbol: str
+
+        :returns: API response
+
+        .. code-block:: python
+
+            {'mins': 5, 'price': '3452.789282'} 
+
+        :raises: ResponseException, APIException, ConnectionError
+
+        """
+        return self._get('avgPrice', data=params,
+                version=self.PRIVATE_API_VERSION)
+
     def orderbook_ticker(self, **params):
         """Latest price for a symbol or symbols.
 
